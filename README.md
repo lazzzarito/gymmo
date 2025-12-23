@@ -50,9 +50,8 @@ Gymmo está optimizado para ser desplegado en **Vercel**. Simplemente conecta tu
 
 ## 📄 Notas de Versión (v3.0)
 
-- **Localización completa al español:** Toda la interfaz y la base de datos de ejercicios están traducidas.
+- **Completamente al español:** Toda la interfaz y la base de datos de ejercicios están traducidas.
 - **Sistema de Sesión Híbrido:** Tus datos persisten localmente, permitiéndote cerrar sesión sin perder el progreso.
-- **Gremio de Héroes:** Crea o únete a clanes al alcanzar el Nivel 50.
 - **Optimización Mobile:** Diseño responsive pensado para el uso en el gimnasio.
 
 ---
