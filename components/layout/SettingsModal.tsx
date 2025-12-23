@@ -23,14 +23,14 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 <div className="space-y-2">
                     <h3 className="font-press-start text-[10px] text-secondary">COMUNIDAD</h3>
                     <div className="grid grid-cols-2 gap-2">
-                        <a href="https://t.me/gymmo_app" target="_blank" className="p-3 border-2 border-gray-800 bg-black/40 text-center hover:border-secondary transition-colors flex items-center justify-center gap-2">
+                        <a href="https://t.me/GymmoRPG" target="_blank" className="p-3 border-2 border-gray-800 bg-black/40 text-center hover:border-secondary transition-colors flex items-center justify-center gap-2">
                             <span className="font-vt323 text-xl text-blue-400">Telegram</span>
                         </a>
-                        <a href="https://wa.me/gymmo" target="_blank" className="p-3 border-2 border-gray-800 bg-black/40 text-center hover:border-secondary transition-colors flex items-center justify-center gap-2">
+                        <a href="https://whatsapp.com/channel/0029VbCADrxIN9iigavdj23h" target="_blank" className="p-3 border-2 border-gray-800 bg-black/40 text-center hover:border-secondary transition-colors flex items-center justify-center gap-2">
                             <span className="font-vt323 text-xl text-green-400">WhatsApp</span>
                         </a>
                     </div>
-                    <a href="https://github.com/gymmo-dev/gymmo" target="_blank" className="block p-3 border-2 border-gray-800 bg-black/40 text-center hover:border-white transition-colors">
+                    <a href="https://github.com/lazzzarito/gymmo" target="_blank" className="block p-3 border-2 border-gray-800 bg-black/40 text-center hover:border-white transition-colors">
                         <span className="font-vt323 text-xl text-gray-400 text-center block">Código en GitHub</span>
                     </a>
                 </div>
