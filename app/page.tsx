@@ -155,8 +155,7 @@ export default function EntryPoint() {
                 className="text-center"
               >
                 <h1 className="text-2xl md:text-3xl text-primary mb-8 leading-relaxed font-vt323 text-4xl">
-                  Te has despertado en un mundo donde la fuerza lo es todo...
-                  ¿Cuál es tu correo galáctico?
+                  ¿Comenzamos? Ingresa tu correo electrónico
                 </h1>
                 <div className="mb-8">
                   <PixelInput
