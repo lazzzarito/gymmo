@@ -17,6 +17,17 @@ const vt323 = VT323({
 export const metadata: Metadata = {
   title: "Gymmo | The RPG Fitness Game",
   description: "Level up your fitness in this RPG-style workout tracker.",
+  manifest: "/manifest.json",
+  themeColor: "#ff4d4d",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Gymmo RPG"
+  },
+  icons: {
+    icon: "/icon-512x512.png",
+    apple: "/icon-512x512.png"
+  }
 };
 
 export default function RootLayout({

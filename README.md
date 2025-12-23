@@ -2,7 +2,12 @@
 
 **Gymmo** es una aplicación de fitness gamificada construida con **Next.js**, diseñada para transformar tu rutina de entrenamiento en una aventura épica de RPG. Evoluciona a tu héroe, conquista mazmorras (entrenamientos) y desbloquea tu verdadero potencial.
 
-![Gymmo Logo](logo.png)
+![Logo](logo.webp)
+
+### 🌐 ¡Prueba la App Online!
+[https://gymmorpg.vercel.app/](https://gymmorpg.vercel.app/)
+
+---
 
 ## ✨ Características Principales
 
@@ -45,9 +50,10 @@ Gymmo está optimizado para ser desplegado en **Vercel**. Simplemente conecta tu
 
 ## 📄 Notas de Versión (v3.0)
 
-- Localización completa al español.
-- Sistema de sesión híbrido (Local-first).
-- Optimización visual para dispositivos móviles.
+- **Localización completa al español:** Toda la interfaz y la base de datos de ejercicios están traducidas.
+- **Sistema de Sesión Híbrido:** Tus datos persisten localmente, permitiéndote cerrar sesión sin perder el progreso.
+- **Gremio de Héroes:** Crea o únete a clanes al alcanzar el Nivel 50.
+- **Optimización Mobile:** Diseño responsive pensado para el uso en el gimnasio.
 
 ---
-*Desarrollado con pasión gracias a la disciplina y el vicio de levantar hierros. 2025.*
+*Desarrollado por [https://1azarito.vercel.app/](https://1azarito.vercel.app/). 2025.*

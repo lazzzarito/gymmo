@@ -100,7 +100,7 @@ export default function Hub() {
                                 <Calendar className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h3 className="font-press-start text-[10px] text-white">REVISAR PLANIFY</h3>
+                                <h3 className="font-press-start text-[10px] text-white">REVISAR PLANIFICADOR</h3>
                                 <p className="font-vt323 text-gray-400 text-lg">Configura tu semana de entrenamiento</p>
                             </div>
                         </div>

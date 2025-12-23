@@ -24,8 +24,8 @@ export function RoutineBuilder() {
             {/* Active Routine (The Inventory) */}
             <section className="bg-black/20 p-4 border-2 border-gray-800 rounded-lg">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-press-start text-xs text-secondary">ACTIVE ROUTINE ({activeRoutine.length})</h2>
-                    <span className="font-vt323 text-gray-400 text-sm">Target Exp: {activeRoutine.reduce((acc, ex) => acc + ex.xpReward, 0)} XP</span>
+                    <h2 className="font-press-start text-xs text-secondary">RUTINA ACTIVA ({activeRoutine.length})</h2>
+                    <span className="font-vt323 text-gray-400 text-sm">Experiencia: {activeRoutine.reduce((acc, ex) => acc + ex.xpReward, 0)} XP</span>
                 </div>
 
                 {activeRoutine.length === 0 ? (
@@ -51,7 +51,7 @@ export function RoutineBuilder() {
                             </PixelCard>
                         ))}
                         <PixelButton className="w-full mt-4" variant="primary" onClick={() => setIsWorkoutOpen(true)}>
-                            <Swords className="w-4 h-4 mr-2" /> BATTLE START
+                            <Swords className="w-4 h-4 mr-2" /> COMENZAR BATALLA
                         </PixelButton>
                     </div>
                 )}

@@ -14,7 +14,8 @@ interface WeeklyPlannerModalProps {
 
 const MUSCLE_OPTIONS: MuscleGroup[] = ['Pecho', 'Espalda', 'Piernas', 'Hombros', 'Bíceps', 'Tríceps', 'Abdominales', 'Cardio'];
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const DAY_LABELS: Record<string, string> = { 'Mon': 'Lunes', 'Tue': 'Martes', 'Wed': 'Mié', 'Thu': 'Jue', 'Fri': 'Vie', 'Sat': 'Sáb', 'Sun': 'Dom' };
+const DAY_LABELS: Record<string, string> = { 'Mon': 'Lunes', 'Tue': 'Martes', 'Wed': 'Miércoles', 'Thu': 'Jueves', 'Fri': 'Viernes', 'Sat': 'Sábado', 'Sun': 'Domingo' };
+const DAY_SHORT: Record<string, string> = { 'Mon': 'L', 'Tue': 'M', 'Wed': 'M', 'Thu': 'J', 'Fri': 'V', 'Sat': 'S', 'Sun': 'D' };
 
 export function WeeklyPlannerModal({ isOpen, onClose }: WeeklyPlannerModalProps) {
     const { weeklyPlan, updateWeeklyPlan } = useGameStore();
@@ -54,10 +55,22 @@ export function WeeklyPlannerModal({ isOpen, onClose }: WeeklyPlannerModalProps)
         onClose();
     };
 
+    const handleResetDay = () => {
+        setTempPlan({
+            ...tempPlan,
+            [selectedDay]: {
+                muscles: [],
+                time: '18:00',
+                mode: 'solo',
+                isActive: false
+            }
+        });
+    };
+
     const currentSchedule = tempPlan[selectedDay] || { muscles: [], time: '18:00', mode: 'solo', isActive: false };
 
     return (
-        <PixelModal isOpen={isOpen} onClose={onClose} title="PLANIFY (WEEKLY)">
+        <PixelModal isOpen={isOpen} onClose={onClose} title="PLANIFICADOR SEMANAL">
             <div className="space-y-6">
 
                 {/* Day Selector */}
@@ -72,7 +85,7 @@ export function WeeklyPlannerModal({ isOpen, onClose }: WeeklyPlannerModalProps)
                                 tempPlan[day]?.isActive && selectedDay !== day ? "border-primary/50 text-white" : ""
                             )}
                         >
-                            <span className="font-press-start text-[8px]">{day.charAt(0)}</span>
+                            <span className="font-press-start text-[8px]">{DAY_SHORT[day]}</span>
                             {tempPlan[day]?.isActive && <div className="w-1.5 h-1.5 bg-green-400 mt-1" />}
                         </button>
                     ))}
@@ -103,9 +116,11 @@ export function WeeklyPlannerModal({ isOpen, onClose }: WeeklyPlannerModalProps)
                         ))}
                     </div>
 
-                    <div className="pt-2 border-t border-gray-700 font-vt323 text-gray-400 text-sm flex justify-between">
+                    <div className="pt-2 border-t border-gray-700 font-vt323 text-gray-400 text-sm flex justify-between items-center">
                         <label>Hora: <input type="time" className="bg-transparent border-b border-gray-500 text-white" defaultValue={currentSchedule.time} /></label>
-                        <span>Mode: {currentSchedule.mode.toUpperCase()}</span>
+                        <PixelButton size="sm" variant="secondary" onClick={handleResetDay}>
+                            REINICIAR DÍA
+                        </PixelButton>
                     </div>
                 </div>
 
