@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Press_Start_2P, VT323 } from "next/font/google";
 import "./globals.css";
+import { Preloader } from "@/components/ui/Preloader";
+import { LiveBackground } from "@/components/ui/LiveBackground";
+import { PageTransition } from "@/components/layout/PageTransition";
 
 const pressStart = Press_Start_2P({
   weight: "400",
@@ -38,9 +41,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${pressStart.variable} ${vt323.variable} antialiased bg-background text-foreground font-vt323`}
+        className={`${pressStart.variable} ${vt323.variable} antialiased bg-background text-foreground font-vt323 transition-colors duration-500`}
       >
-        {children}
+        <Preloader />
+        <LiveBackground />
+        <PageTransition>
+          {children}
+        </PageTransition>
       </body>
     </html>
   );

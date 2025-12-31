@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Exercise, MuscleGroup } from '@/lib/exercises';
-import { ACHIEVEMENTS } from './achievements';
-import { Friend, Guild, Message, MOCK_GUILDS } from './social';
+import { playSfx } from './sound';
+
 
 type Gender = 'male' | 'female' | '';
 type ClassType = 'Novato' | 'Intermedio' | 'Pro' | '';
@@ -33,6 +33,7 @@ export interface RoutineConfig {
     reps: number;
     weight: number; // in kg
     technique: 'Normal' | 'Dropset' | 'Superset' | 'Failure';
+    restTime?: number; // seconds, default 120
 }
 
 export interface RoutineItem extends Exercise {
@@ -80,6 +81,7 @@ export type WeeklyPlan = Record<string, DaySchedule>;
 export interface UserState {
     name: string;
     email: string;
+    password?: string; // Local password
     isAuthenticated: boolean;
     gender: Gender;
     dailyQuest: DailyQuest;
@@ -98,15 +100,12 @@ export interface UserState {
     // History & Progression
     activityHistory: ActivityLog[];
     weightHistory: WeightRecord[];
-    unlockedAchievementIds: string[];
     talents: Talent[];
     skillPoints: number;
+    dungeonUnlocks: string[];
+    bossKills: string[];
 
-    // Social
-    friends: Friend[];
-    guilds: Guild[];
-    activeGuildId: string | null;
-    socialMessages: Message[];
+
 
     // Actions
     updateProfile: (data: Partial<UserState>) => void;
@@ -116,16 +115,11 @@ export interface UserState {
     checkStreak: () => void;
     logActivity: (activity: Omit<ActivityLog, 'id' | 'date'>) => void;
     updateWeight: (newWeight: number) => void;
-    checkAchievements: () => void;
+    reorderRoutine: (fromIndex: number, toIndex: number) => void;
+    updateRoutineItem: (instanceId: string, config: Partial<RoutineConfig>) => void;
     unlockTalent: (talentId: string) => void;
 
-    // Social Actions
-    addFriend: (friend: Friend) => void;
-    removeFriend: (friendId: string) => void;
-    joinGuild: (guildId: string) => void;
-    createGuild: (guild: Omit<Guild, 'id' | 'totalPower' | 'members'>) => void;
-    sendSocialMessage: (message: Omit<Message, 'id' | 'timestamp'>) => void;
-    clearSocialMessages: (targetId: string) => void;
+
 
     // Planner & Automation
     weeklyPlan: WeeklyPlan;
@@ -140,6 +134,7 @@ export const useGameStore = create<UserState>()(
         (set, get) => ({
             name: 'Héroe',
             email: '',
+            password: '',
             isAuthenticated: false,
             gender: '',
             age: 0,
@@ -155,13 +150,11 @@ export const useGameStore = create<UserState>()(
             streak: 0,
             activityHistory: [],
             weightHistory: [],
-            unlockedAchievementIds: [],
             talents: [],
             skillPoints: 0,
-            friends: [],
-            guilds: [],
-            activeGuildId: null,
-            socialMessages: [],
+            dungeonUnlocks: ['forge'],
+            bossKills: [],
+
 
             updateProfile: (data) => set((state) => ({ ...state, ...data })),
 
@@ -176,6 +169,7 @@ export const useGameStore = create<UserState>()(
                             reps: 12,
                             weight: 0,
                             technique: 'Normal',
+                            restTime: 120,
                             ...config
                         }
                     }
@@ -190,44 +184,73 @@ export const useGameStore = create<UserState>()(
                 const state = get();
                 const newXp = state.xp + amount;
                 let levelUp = false;
-                let newState = { xp: newXp };
 
-                if (newXp >= state.maxXp) {
+                // XP Curve: 1000 * Level. Simple linear scaling.
+                // Level 1 -> 1000 to Lvl 2.
+                // Level 2 -> 2000 to Lvl 3.
+                // Total to reach Lvl 50 = Sum(1..49) * 1000 = ~1.2M. Reasonable.
+                const xpNeeded = state.level * 1000;
+
+                if (newXp >= xpNeeded) {
                     levelUp = true;
-                    newState = {
-                        xp: newXp - state.maxXp,
+                    // Overflow XP carries over
+                    const overflow = newXp - xpNeeded;
+
+                    set({
                         level: state.level + 1,
-                        maxXp: Math.floor(state.maxXp * 1.2),
+                        xp: overflow,
+                        maxXp: (state.level + 1) * 1000,
                         stats: {
                             str: state.stats.str + 2,
                             sta: state.stats.sta + 2,
                             will: state.stats.will + 2,
                         },
                         skillPoints: state.skillPoints + 1,
-                    } as any;
+                    });
+                    playSfx('success'); // Level Up Sound!
+                } else {
+                    set({ xp: newXp });
                 }
-
-                set(newState);
-                get().checkAchievements();
             },
 
             checkStreak: () => {
                 const state = get();
                 const last = state.lastLogin;
                 const today = new Date().toISOString().split('T')[0];
+
                 if (last === today) return;
+
+                // New Day Logic
+                const newState: Partial<UserState> = { lastLogin: today };
+
+                // Regenerate Daily Quest
+                import('./game-data').then(({ QUEST_TEMPLATES }) => {
+                    const randomQuest = QUEST_TEMPLATES[Math.floor(Math.random() * QUEST_TEMPLATES.length)];
+                    // XP Reward scales with level: 100 + (Level * 20)
+                    const scaledXp = 100 + (state.level * 20);
+
+                    set({
+                        dailyQuest: {
+                            ...randomQuest,
+                            xpReward: scaledXp
+                        }
+                    });
+                });
 
                 if (last) {
                     const lastDate = new Date(last);
                     const diffDays = Math.floor((new Date(today).getTime() - lastDate.getTime()) / (1000 * 3600 * 24));
                     if (diffDays === 1) {
-                        set({ streak: state.streak + 1, lastLogin: today });
+                        newState.streak = state.streak + 1;
                     } else if (diffDays > 1) {
-                        set({ streak: 1, lastLogin: today });
+                        // Check for Streak Shield logic here if implemented later
+                        newState.streak = 1;
                     }
                 } else {
-                    set({ streak: 1, lastLogin: today });
+                    newState.streak = 1;
                 }
+
+                set(newState);
             },
 
             logActivity: (activity) => {
@@ -243,7 +266,6 @@ export const useGameStore = create<UserState>()(
                         ...state.activityHistory
                     ]
                 }));
-                get().checkAchievements();
             },
 
             updateWeight: (newWeight) => set((state) => {
@@ -263,38 +285,20 @@ export const useGameStore = create<UserState>()(
                 };
             }),
 
-            checkAchievements: () => {
-                const state = get();
-                const { activityHistory, level, stats, unlockedAchievementIds } = state;
-                const newUnlocks = [...unlockedAchievementIds];
-                let changed = false;
+            reorderRoutine: (fromIndex, toIndex) => set((state) => {
+                const newRoutine = [...state.activeRoutine];
+                const [movedItem] = newRoutine.splice(fromIndex, 1);
+                newRoutine.splice(toIndex, 0, movedItem);
+                return { activeRoutine: newRoutine };
+            }),
 
-                const workoutCount = activityHistory.filter(a => a.type === 'workout').length;
-                const questCount = activityHistory.filter(a => a.type === 'quest').length;
-
-                ACHIEVEMENTS.forEach(ach => {
-                    if (newUnlocks.includes(ach.id)) return;
-
-                    let achieved = false;
-                    switch (ach.requirementType) {
-                        case 'workout_count': achieved = workoutCount >= ach.requirementValue; break;
-                        case 'quest_count': achieved = questCount >= ach.requirementValue; break;
-                        case 'level': achieved = level >= ach.requirementValue; break;
-                        case 'stat_str': achieved = stats.str >= ach.requirementValue; break;
-                        case 'stat_sta': achieved = stats.sta >= ach.requirementValue; break;
-                        case 'stat_will': achieved = stats.will >= ach.requirementValue; break;
-                    }
-
-                    if (achieved) {
-                        newUnlocks.push(ach.id);
-                        changed = true;
-                    }
-                });
-
-                if (changed) {
-                    set({ unlockedAchievementIds: newUnlocks });
-                }
-            },
+            updateRoutineItem: (instanceId, config) => set((state) => ({
+                activeRoutine: state.activeRoutine.map(item =>
+                    item.instanceId === instanceId
+                        ? { ...item, config: { ...item.config, ...config } }
+                        : item
+                )
+            })),
 
             unlockTalent: (talentId) => set((state) => {
                 if (state.skillPoints <= 0) return state;
@@ -302,61 +306,7 @@ export const useGameStore = create<UserState>()(
                 return { skillPoints: state.skillPoints - 1 };
             }),
 
-            addFriend: (friend) => set((state) => ({
-                friends: [...state.friends.filter(f => f.id !== friend.id), friend]
-            })),
 
-            removeFriend: (id) => set((state) => ({
-                friends: state.friends.filter(f => f.id !== id),
-                socialMessages: state.socialMessages.filter(m => m.senderId !== id)
-            })),
-
-            joinGuild: (id) => set((state) => {
-                const guild = [...state.guilds, ...MOCK_GUILDS].find(g => g.id === id);
-                if (guild && state.level >= guild.requiredLevel) {
-                    return { activeGuildId: id };
-                }
-                return state;
-            }),
-
-            clearSocialMessages: (targetId) => set((state) => ({
-                socialMessages: state.socialMessages.filter(m => m.senderId !== targetId)
-            })),
-
-            createGuild: (newGuild) => set((state) => {
-                if (state.level < 50) return state;
-                const guild: Guild = {
-                    ...newGuild,
-                    id: Math.random().toString(36).substr(2, 9),
-                    totalPower: 0,
-                    members: [{
-                        id: 'me',
-                        name: state.name,
-                        level: state.level,
-                        heroClass: state.class,
-                        lastActive: new Date().toISOString(),
-                        hasAura: state.streak >= 7,
-                        isOnline: true,
-                        role: 'leader',
-                        contribution: 0
-                    }]
-                };
-                return {
-                    guilds: [...state.guilds, guild],
-                    activeGuildId: guild.id
-                };
-            }),
-
-            sendSocialMessage: (msg) => set((state) => ({
-                socialMessages: [
-                    ...state.socialMessages,
-                    {
-                        ...msg,
-                        id: Math.random().toString(36).substr(2, 9),
-                        timestamp: new Date().toISOString()
-                    }
-                ]
-            })),
 
             weeklyPlan: {},
             updateWeeklyPlan: (plan) => set({ weeklyPlan: plan }),
