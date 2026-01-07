@@ -30,7 +30,7 @@ export const generateDailyRoutine = (targetMuscles: MuscleGroup[], level: number
             routine.push({
                 ...compounds[0],
                 instanceId: crypto.randomUUID(),
-                config: { sets: baseSets, reps: 6, weight: 0, technique: 'Normal' }
+                config: { sets: baseSets, reps: 6, weight: 0, restTime: 120, technique: 'Normal' }
             });
         }
 
@@ -39,7 +39,7 @@ export const generateDailyRoutine = (targetMuscles: MuscleGroup[], level: number
             routine.push({
                 ...ex,
                 instanceId: crypto.randomUUID(),
-                config: { sets: 3, reps: 12, weight: 0, technique: 'Normal' }
+                config: { sets: 3, reps: 12, weight: 0, restTime: 90, technique: 'Normal' }
             });
         });
     });
@@ -51,7 +51,7 @@ export const generateDailyRoutine = (targetMuscles: MuscleGroup[], level: number
             routine.push({
                 ...ex,
                 instanceId: crypto.randomUUID(),
-                config: { sets: 3, reps: 15, weight: 0, technique: 'Normal' }
+                config: { sets: 3, reps: 15, weight: 0, restTime: 60, technique: 'Normal' }
             });
         });
     }
