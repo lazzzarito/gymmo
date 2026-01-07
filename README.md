@@ -2,9 +2,12 @@
 
 ![Gymmo Logo](logo.webp)
 
-> **"No entrenes solo por salud... ¡Entrena para convertirte en una LEYENDA!"** 🏆
-
-[![Vercel App](https://img.shields.io/badge/Jugar%20Online-gymmorpg.vercel.app-black?style=for-the-badge&logo=vercel)](https://gymmorpg.vercel.app/)
+<div align="center">
+  <p><strong>"No entrenes solo por salud... ¡Entrena para convertirte en una LEYENDA!"</strong> 🏆</p>
+  <a href="https://gymmorpg.vercel.app/">
+    <img src="https://img.shields.io/badge/Jugar%20Online-gymmorpg.vercel.app-black?style=for-the-badge&logo=vercel" alt="Vercel App">
+  </a>
+</div>
 
 **Gymmo** transforma tu aburrida rutina de gimnasio en un épico **RPG de Acción**. Cada repetición es un golpe, cada entrenamiento una mazmorra, y cada gota de sudor te acerca al siguiente nivel. Construido con tecnología web moderna y estética Pixel Art retro.
 
