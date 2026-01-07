@@ -1,7 +1,7 @@
 <h1 align="center">  ⚔️ Gymmo RPG: Tu Aventura Fitness </h1>
 
 <p align="center">
-  <img src="logo.webp" alt="Gymmo Logo" width="200">
+  <img src="logo.webp" alt="Gymmo Logo" width="100%">
 </p>
 
 <div align="center">
