@@ -11,7 +11,7 @@
   </a>
 </div>
 
-<p align="center"> **Gymmo** transforma tu aburrida rutina de gimnasio en un épico **RPG de Acción**. Cada repetición es un golpe, cada entrenamiento una mazmorra, y cada gota de sudor te acerca al siguiente nivel. Construido con tecnología web moderna y estética Pixel Art retro. </p>
+<p align="center"> <b> Gymmo </b> transforma tu aburrida rutina de gimnasio en un épico <b> RPG de Acción </b>. Cada repetición es un golpe, cada entrenamiento una mazmorra, y cada gota de sudor te acerca al siguiente nivel. Construido con tecnología web moderna y estética <b> Pixel Art retro </b>. </p>
 
 ---
 
