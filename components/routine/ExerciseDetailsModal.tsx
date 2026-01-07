@@ -15,7 +15,7 @@ interface ExerciseDetailsModalProps {
     exercise: Exercise | null;
     mode: 'ADD' | 'EDIT';
     instanceId?: string; // Only for EDIT mode
-    initialConfig?: { sets: number; reps: number; weight: number; technique?: string };
+    initialConfig?: { sets: number; reps: number; weight: number; restTime?: number; technique?: string };
 }
 
 export function ExerciseDetailsModal({ isOpen, onClose, exercise, mode, instanceId, initialConfig }: ExerciseDetailsModalProps) {

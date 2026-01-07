@@ -33,6 +33,7 @@ export interface RoutineConfig {
     sets: number;
     reps: number;
     weight: number; // in kg
+    restTime: number; // in seconds
     technique: 'Normal' | 'Dropset' | 'Superset' | 'Failure';
 }
 
@@ -199,6 +200,7 @@ export const useGameStore = create<UserState>()(
                             sets: 3,
                             reps: 12,
                             weight: 0,
+                            restTime: 120,
                             technique: 'Normal',
                             ...config
                         }
