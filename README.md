@@ -1,4 +1,4 @@
-# ⚔️ Gymmo RPG: Tu Aventura Fitness
+<h1 align="center">  ⚔️ Gymmo RPG: Tu Aventura Fitness </h1>
 
 ![Gymmo Logo](logo.webp)
 
