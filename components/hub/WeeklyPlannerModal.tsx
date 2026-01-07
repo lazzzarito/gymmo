@@ -2,10 +2,11 @@
 
 import { PixelModal } from "@/components/ui/PixelModal";
 import { PixelButton } from "@/components/ui/PixelButton";
-import { useGameStore, WeeklyPlan, DaySchedule } from "@/lib/store";
+import { useGameStore, WeeklyPlan, DaySchedule, DailyQuest } from "@/lib/store";
 import { useState } from "react";
 import { MuscleGroup } from "@/lib/exercises";
 import { cn } from "@/lib/utils";
+import { generateDailyRoutine, generateDailyQuest } from "@/lib/generator";
 
 interface WeeklyPlannerModalProps {
     isOpen: boolean;
@@ -52,6 +53,29 @@ export function WeeklyPlannerModal({ isOpen, onClose }: WeeklyPlannerModalProps)
 
     const handleSave = () => {
         updateWeeklyPlan(tempPlan);
+
+        // Auto-generate if today is active and has muscles
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const todayKey = days[new Date().getDay()];
+        const todayPlan = tempPlan[todayKey];
+
+        if (todayPlan?.isActive && todayPlan.muscles.length > 0) {
+            const { level, setRoutine, updateProfile } = useGameStore.getState();
+
+            // Always create a fresh routine and quest when plan is saved if it's training day
+            // This ensures the current quest/routine matches the NEWLY saved plan
+            const newRoutine = generateDailyRoutine(todayPlan.muscles, level || 1);
+            setRoutine(newRoutine);
+
+            const smartQuest = generateDailyQuest(todayPlan.muscles);
+            updateProfile({ dailyQuest: smartQuest as DailyQuest });
+        } else {
+            // If today is now a rest day, clear them
+            const { setRoutine, updateProfile } = useGameStore.getState();
+            setRoutine([]);
+            updateProfile({ dailyQuest: null });
+        }
+
         onClose();
     };
 

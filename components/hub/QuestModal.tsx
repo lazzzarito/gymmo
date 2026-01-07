@@ -3,7 +3,7 @@
 import { PixelModal } from "@/components/ui/PixelModal";
 import { PixelButton } from "@/components/ui/PixelButton";
 import { useGameStore } from "@/lib/store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, Trophy } from "lucide-react";
 import { playSfx } from "@/lib/sound";
 import { EXERCISE_DB } from "@/lib/exercises";
@@ -22,8 +22,15 @@ export function QuestModal({ isOpen, onClose }: QuestModalProps) {
         // In a real app, this would persist the "active" state to the store
     };
 
+    useEffect(() => {
+        if (!dailyQuest && isOpen) {
+            onClose();
+        }
+    }, [dailyQuest, isOpen, onClose]);
+
 
     const handleComplete = () => {
+        if (!dailyQuest) return;
         addXp(dailyQuest.xpReward);
         setStatus('completed');
         playSfx('success');
@@ -36,11 +43,13 @@ export function QuestModal({ isOpen, onClose }: QuestModalProps) {
         });
     };
 
+    if (!dailyQuest) return null;
+
     return (
         <PixelModal isOpen={isOpen} onClose={onClose} title="MISIÓN DIARIA">
             <div className="text-center space-y-6">
 
-                {status === 'completed' ? (
+                {status === 'completed' && dailyQuest ? (
                     <div className="py-8 animate-pulse">
                         <Trophy className="w-16 h-16 mx-auto text-yellow-400 mb-4" />
                         <h3 className="font-press-start text-xl text-yellow-400 mb-2">¡MISIÓN COMPLETADA!</h3>

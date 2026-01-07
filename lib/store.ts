@@ -85,7 +85,7 @@ export interface UserState {
     password?: string; // Local simple auth
     isAuthenticated: boolean;
     gender: Gender;
-    dailyQuest: DailyQuest;
+    dailyQuest: DailyQuest | null;
     activeRoutine: RoutineItem[];
     age: number;
     weight: number;
@@ -157,7 +157,7 @@ export const useGameStore = create<UserState>()(
             weight: 0,
             height: 0,
             class: 'Novato',
-            dailyQuest: { title: 'Misión del Día', description: ['Supera tus límites'], xpReward: 100 },
+            dailyQuest: null,
             activeRoutine: [],
             level: 1,
             xp: 0,
@@ -400,8 +400,10 @@ export const useGameStore = create<UserState>()(
                 window.location.href = '/';
             },
             hardReset: () => {
+                // Clear the persistence storage
                 localStorage.removeItem('gymmo-storage');
-                window.location.reload();
+                // Force a complete reload to reset all memory states and redirect to home
+                window.location.href = '/';
             },
         }),
         {

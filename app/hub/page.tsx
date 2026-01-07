@@ -40,7 +40,7 @@ export default function Hub() {
             const smartQuest = generateDailyQuest(todayPlan.muscles);
             updateProfile({ dailyQuest: smartQuest });
         }
-    }, [todayKey, todayPlan?.isActive, isBossLevel, dailyQuest]);
+    }, [todayKey, todayPlan?.isActive, JSON.stringify(todayPlan?.muscles), isBossLevel, dailyQuest, updateProfile]);
 
     const handleDungeonRun = () => {
         if (!todayPlan || !todayPlan.isActive) {
@@ -48,9 +48,14 @@ export default function Hub() {
             return;
         }
 
-        const newRoutine = generateDailyRoutine(todayPlan.muscles, level || 1);
-        setRoutine(newRoutine);
-        router.push('/routine');
+        // If for some reason the routine wasn't generated on save, generate it now
+        const { activeRoutine } = useGameStore.getState();
+        if (activeRoutine.length === 0) {
+            const newRoutine = generateDailyRoutine(todayPlan.muscles, level || 1);
+            setRoutine(newRoutine);
+        }
+
+        setIsRoutineOpen(true);
     };
 
     const daysShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -88,9 +93,13 @@ export default function Hub() {
                             </PixelButton>
                         </div>
                     </PixelCard>
+                ) : todayPlan?.isActive ? (
+                    <div className="text-center text-gray-500 font-vt323 py-4 border-2 border-dashed border-gray-800 rounded animate-pulse">
+                        Generando misión para hoy...
+                    </div>
                 ) : (
-                    <div className="text-center text-gray-500 font-vt323 py-4 border-2 border-dashed border-gray-800 rounded">
-                        Generando misión...
+                    <div className="text-center text-gray-400 font-vt323 py-4 border-2 border-dashed border-gray-800 rounded bg-black/20">
+                        Hoy es día de descanso. Planifica tu semana para entrenar.
                     </div>
                 )}
                 <QuestModal isOpen={isQuestOpen} onClose={() => setIsQuestOpen(false)} />
@@ -101,7 +110,7 @@ export default function Hub() {
             <section>
                 <PixelCard
                     className="group cursor-pointer hover:border-secondary transition-colors relative overflow-hidden bg-gray-900"
-                    onClick={() => setIsRoutineOpen(true)}
+                    onClick={handleDungeonRun}
                 >
                     {/* Background Art */}
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-blue-900/20" />

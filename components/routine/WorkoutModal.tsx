@@ -5,7 +5,7 @@ import { PixelModal } from "@/components/ui/PixelModal";
 import { useGameStore } from "@/lib/store";
 import { PixelButton } from "@/components/ui/PixelButton";
 import { PixelCard } from "@/components/ui/PixelCard";
-import { Check, Timer, ArrowRight } from "lucide-react";
+import { Check, Timer, ArrowRight, Info } from "lucide-react";
 import { RoutineItem } from "@/lib/store";
 
 interface WorkoutModalProps {
@@ -50,7 +50,6 @@ export function WorkoutModal({ isOpen, onClose }: WorkoutModalProps) {
         return () => clearInterval(interval);
     }, [isResting, restSeconds]);
 
-    // Reset timer when exercise changes
     useEffect(() => {
         setSeconds(0);
     }, [currentIndex]);
@@ -155,6 +154,26 @@ export function WorkoutModal({ isOpen, onClose }: WorkoutModalProps) {
                         <div className="font-vt323 text-xl text-gray-400">
                             {currentExercise.config?.sets || 0} SERIES x {currentExercise.config?.reps || 0} REPS @ {currentExercise.config?.weight || 0}KG
                         </div>
+
+                        {/* Instructions (Permanently Visible) */}
+                        {currentExercise.instructions && currentExercise.instructions.length > 0 && (
+                            <div className="mt-4 border-t border-gray-800 pt-4 text-left">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Info className="w-3 h-3 text-secondary" />
+                                    <span className="font-press-start text-[8px] text-secondary">GUÍA DE COMBATE</span>
+                                </div>
+                                <div className="bg-black/40 p-3 border border-gray-800 rounded max-h-40 overflow-y-auto scrollbar-hide">
+                                    <ul className="space-y-2">
+                                        {currentExercise.instructions.map((inst, i) => (
+                                            <li key={i} className="flex gap-2 text-sm font-vt323 text-gray-300 leading-tight">
+                                                <span className="text-secondary font-press-start text-[8px] mt-1">{i + 1}.</span>
+                                                <span>{inst}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Sets Management */}
